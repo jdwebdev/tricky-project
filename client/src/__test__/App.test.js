@@ -2,10 +2,17 @@
 import React from 'react'
 import App from '../App'
 import { shallow } from "enzyme"
+import { shallowToJson } from "enzyme-to-json"
+
 
 describe("app component", () => {
   it("renders App component without crashing", () => {
     shallow(<App />)
+  })
+
+  it("renders correcly", () => {
+    const tree = shallow(<App />)
+    expect(shallowToJson(tree)).toMatchSnapshot()
   })
 
   let appWrapper;
