@@ -12,13 +12,52 @@ header {
     margin: 10px 0px;
 }
 
-.startBtnContainer {
+/* INTRODUCTION */
+.introductionContainer {
+    margin: 0 auto;
+    padding: 50px;
+    width: 70%;
+    min-height: 300px;
+    border-radius: 10px;
+    font-size: 20px;
+    background-color: #8e8e8e;
+}
+.introductionContainer p {
+    min-height: 60px;
+}
+.nextButton {
+    width: 100px;
+    height: 50px;
+    margin-top: 50px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: white;
+    cursor: pointer;
+    transition: font-size 0.2s, background-color 0.4s;
+}
+
+.nextButton:hover {
+    font-size: 18px;
+    background-color: rgb(47, 255, 109);
+}
+
+/* .startBtnContainer {
     margin-top: 100px;
+} */
+
+@media screen and (max-width: 768px) {
+    .introductionContainer {
+        min-height: 400px;
+    }
+    .introductionContainer p {
+        min-height: 120px;
+    }
 }
 
 .startBtn {
     background-color: #282c34;
-    width: 250px;
+    width: 200px;
     height: 200px;
     border: none;
     border-radius: 10px;
@@ -34,7 +73,7 @@ header {
     background-color: rgb(106, 106, 106);
     color: black;
     font-size: 50px;
-    width: 270px;
+    width: 220px;
     height: 220px;
 }
 
