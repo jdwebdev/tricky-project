@@ -1,9 +1,8 @@
 import { createStore } from 'redux'
-import gameStateReducer from './reducers/gameState'
+import allReducers from './reducers/index.js';
 
 const store = createStore(
-    gameStateReducer,
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    allReducers,
 )
 
 export default store;

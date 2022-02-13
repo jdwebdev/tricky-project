@@ -4,16 +4,8 @@ exports[`app component renders correcly 1`] = `
 <div
   className="tile"
 >
-  <p>
-    1
-     
-    empty
-  </p>
   <img
     src="empty_tile.png"
-  />
-  <div
-    className="tile_hover"
   />
 </div>
 `;

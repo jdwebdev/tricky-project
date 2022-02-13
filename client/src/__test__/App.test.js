@@ -10,7 +10,7 @@ describe("app component", () => {
     shallow(<App />)
   })
 
-  it("renders correcly", () => {
+  it("renders correctly", () => {
     const tree = shallow(<App />)
     expect(shallowToJson(tree)).toMatchSnapshot()
   })
