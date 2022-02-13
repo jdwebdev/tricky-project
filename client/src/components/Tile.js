@@ -6,9 +6,7 @@ const Tile = (props) => {
 
   return (
     <div className="tile">
-        <p>{props.id} {props.type}</p>
         <img src={props.imgSrc}/>
-        <div className="tile_hover"></div>
     </div>
   );
 }

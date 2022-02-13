@@ -8,8 +8,8 @@ const App = () => {
 
   const [gameState, setGameState] = useState('intro');
 
-  const handleClick = () => {
-    setGameState("game");
+  const changeGameState = (newState) => {
+    setGameState(newState);
   }
 
   return (
@@ -19,11 +19,19 @@ const App = () => {
       </header>
       {gameState === "intro" && 
         <Introduction 
-          onClick={handleClick}
+          onClick={() => changeGameState("game")}
         />
       }
       {gameState === "game" &&
-        <Game />
+        <Game 
+          finishGame={() => changeGameState("end")}
+        />
+      }
+      {gameState === "end" && 
+        <div>
+          <p>GAME OVER</p>
+          <p>ICI Affichage du score etc.</p>
+        </div>
       }
     </div>
   );
