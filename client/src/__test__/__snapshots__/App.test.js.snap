@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`app component renders correcly 1`] = `
+<div
+  className="App"
+>
+  <header>
+    <h1>
+      Tricky Project
+    </h1>
+  </header>
+  <Introduction
+    onClick={[Function]}
+  />
+</div>
+`;

@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`app component renders correctly 1`] = `
+<div
+  className="introductionContainer"
+>
+  <p>
+    Bienvenue dans Tricky Project
+  </p>
+  <button
+    className="nextButton"
+    onClick={[Function]}
+  >
+    Suivant ►
+  </button>
+</div>
+`;

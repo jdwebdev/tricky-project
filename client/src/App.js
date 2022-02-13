@@ -1,24 +1,30 @@
-import React from 'react'
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import Game from './components/Game';
+import Introduction from './components/Introduction';
+import { useState } from 'react'
 
 const App = () => {
+
+  const [gameState, setGameState] = useState('intro');
+
+  const handleClick = () => {
+    setGameState("game");
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      <header>
+          <h1>Tricky Project</h1>
       </header>
+      {gameState === "intro" && 
+        <Introduction 
+          onClick={handleClick}
+        />
+      }
+      {gameState === "game" &&
+        <Game />
+      }
     </div>
   );
 }
