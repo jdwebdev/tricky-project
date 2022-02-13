@@ -9,15 +9,8 @@ exports[`app component renders correcly 1`] = `
       Tricky Project
     </h1>
   </header>
-  <div
-    className="startBtnContainer"
-  >
-    <button
-      className="startBtn"
-      onClick={[Function]}
-    >
-      Start
-    </button>
-  </div>
+  <Introduction
+    onClick={[Function]}
+  />
 </div>
 `;

@@ -25,9 +25,9 @@ describe("app component", () => {
     expect(title).toEqual("Tricky Project")
   })
 
-  it("Start button disappear after click", () => {
-    const button = appWrapper.find("button")
-    button.simulate("click")
-    expect(appWrapper.find("button").exists()).toBeFalsy()
-  })
+  // it("Start button disappear after click", () => {
+  //   const button = appWrapper.find("button")
+  //   button.simulate("click")
+  //   expect(appWrapper.find("button").exists()).toBeFalsy()
+  // })
 })
