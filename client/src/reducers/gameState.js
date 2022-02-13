@@ -1,6 +1,6 @@
 import data from '../data';
 
-const initialState = data.stage[0];
+const initialState = {...data.stage[0]};
 
 const gameStateReducer = (state = initialState, action) => {
     let noMaskList;
@@ -15,7 +15,10 @@ const gameStateReducer = (state = initialState, action) => {
                 playerPos: data.stage[action.payload].playerPos,
                 noMask: data.stage[action.payload].noMask,
                 pharmacie: data.stage[action.payload].number,
-                gel: data.stage[action.payload].gel
+                mask: [],
+                gel: data.stage[action.payload].gel,
+                goal: -1,
+                sick: -1
             };
         case 'MOVE_PLAYER':
             return {
@@ -32,6 +35,34 @@ const gameStateReducer = (state = initialState, action) => {
                 ...state,
                 noMask: [...noMaskList],
                 mask: [...maskList]
+            } 
+        case 'GET_GEL':
+            return {
+                ...state,
+                gel: -1
+            }
+        case 'ENTER_PHARMACY':
+            return {
+                ...state,
+                pharmacie: -1,
+                playerPos: -1,
+                goal: action.payload
+            }
+        case 'SPREAD_VIRUS':
+            return {
+                ...state,
+                virus: action.payload
+            }
+        case 'EMPTY_VIRUS':
+            return {
+                ...state,
+                virus: []
+            }
+        case 'CAUGHT_VIRUS':
+            return {
+                ...state,
+                playerPos: -1,
+                sick: action.payload
             }
         default:
             return state;
