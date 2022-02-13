@@ -5,14 +5,14 @@ import { shallow } from "enzyme"
 import { shallowToJson } from "enzyme-to-json"
 
 
-describe("app component", () => {
-  it("renders App component without crashing", () => {
-    shallow(<Introduction />)
+describe("Introduction component", () => {
+  it("renders Introduction component without crashing", () => {
+    shallow(<Introduction onClick={jest.fn()}/>)
   })
 
   let introWrapper;
   beforeEach(() => {
-    introWrapper = shallow(<Introduction />)
+    introWrapper = shallow(<Introduction onClick={jest.fn()}/>)
   })
 
   it("renders correctly", () => {
