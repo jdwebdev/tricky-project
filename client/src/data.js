@@ -2,7 +2,7 @@ export default {
     stage: [{
             number: 0,
             playerPos: 76,
-            noMask: [55, 29, 70, 34],
+            noMask: [29, 34, 55, 80],
             pharmacie: 4,
             gel: 5,
             mask: [],
@@ -11,20 +11,20 @@ export default {
             sick: -1
         }, {
             number: 1,
-            playerPos: 77,
-            noMask: [27, 39, 0, 32],
-            pharmacie: 1,
-            gel: 3,
+            playerPos: 0,
+            noMask: [16, 39, 55, 80],
+            pharmacie: 76,
+            gel: 53,
             mask: [],
             virus: [],
             goal: -1,
             sick: -1
         }, {
             number: 2,
-            playerPos: 78,
-            noMask: [16, 36, 40, 72],
-            pharmacie: 8,
-            gel: 12,
+            playerPos: 80,
+            noMask: [4, 28, 32, 52, 64],
+            pharmacie: 0,
+            gel: 8,
             mask: [],
             virus: [],
             goal: -1,
@@ -33,6 +33,9 @@ export default {
     ],
     score: 0,
     timer: 0,
+    gel: 0,
+    noMask: 0,
+    virus: 0,
     introText: [
         "Bienvenue dans Tricky Project",
         "Le but du jeu est simple : vous devez vous rendre à la pharmacie afin de recevoir votre dose de vaccin.",

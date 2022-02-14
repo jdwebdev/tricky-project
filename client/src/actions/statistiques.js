@@ -10,3 +10,28 @@ export const updateTimer = () => {
         type: 'UPDATE_TIMER'
     }
 }
+
+export const incrementGelStats = () => {
+    return {
+        type: 'INCREMENT_GEL_STATS'
+    }
+}
+
+export const updateNoMaskStats = (stats) => {
+    return {
+        type: 'UPDATE_NO_MASK_STATS',
+        payload: stats
+    }
+}
+
+export const incrementVirusStats = () => {
+    return {
+        type: 'INCREMENT_VIRUS_STATS'
+    }
+}
+
+export const resetStatistiques = () => {
+    return {
+        type: 'RESET_STATS'
+    }
+}

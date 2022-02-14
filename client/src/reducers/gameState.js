@@ -14,8 +14,9 @@ const gameStateReducer = (state = initialState, action) => {
                 number: data.stage[action.payload].number,
                 playerPos: data.stage[action.payload].playerPos,
                 noMask: data.stage[action.payload].noMask,
-                pharmacie: data.stage[action.payload].number,
+                pharmacie: data.stage[action.payload].pharmacie,
                 mask: [],
+                virus: [],
                 gel: data.stage[action.payload].gel,
                 goal: -1,
                 sick: -1
