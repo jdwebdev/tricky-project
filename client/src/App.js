@@ -2,7 +2,8 @@ import React from 'react';
 import './App.css';
 import Game from './components/Game';
 import Introduction from './components/Introduction';
-import { useState } from 'react'
+import Gameover from './components/Gameover';
+import { useState } from 'react';
 
 const App = () => {
 
@@ -28,10 +29,9 @@ const App = () => {
         />
       }
       {gameState === "end" && 
-        <div>
-          <p>GAME OVER</p>
-          <p>ICI Affichage du score etc.</p>
-        </div>
+        <Gameover 
+          retry={() => changeGameState("game")}
+        />
       }
     </div>
   );

@@ -19,7 +19,7 @@ import sick from '../images/sick.png'
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { nextStage, movePlayer, giveMask, getGel, enterPharmacy, spreadVirus, emptyVirus, caughtVirus } from '../actions/gameState';
-import { updateScore } from '../actions/statistiques';
+import { updateScore, incrementGelStats, updateNoMaskStats, incrementVirusStats } from '../actions/statistiques';
 
 const boardWidth = 9; 
 
@@ -28,7 +28,6 @@ const Game = (props) => {
     const dispatch = useDispatch();
     const game = useSelector(state => state);
 
-    console.log("REFRESH");
     const [virusInterval, setVirusInterval] = useState();
     const [tileList, setTileList] = useState([]);
     const [actionBtnLabel, setActionBtnLabel] = useState("Aucune action");
@@ -36,10 +35,19 @@ const Game = (props) => {
     const [toNextStage, SetToNextStage] = useState(false);
 
     const savedSpreadVirusCallback = useRef();
+    const boardElement = useRef();
+    const [boardCSSWidth, setBoardCSSWidth] = useState(630);
+
+    const [alert, setAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
 
     useEffect(() => {
         savedSpreadVirusCallback.current = spreadRandomVirus;
     })
+
+    useEffect(() => {
+        handleResize();
+    }, [])
 
     useEffect(() => {
         setVirusInterval(setInterval(() => {
@@ -55,10 +63,15 @@ const Game = (props) => {
         checkAdjacencyTiles();
     }, [tileList]);
 
-    const createTileList = (gameState) => {
+    const handleResize = () => {
+        if (boardElement.current) {
+            setBoardCSSWidth(boardElement.current.clientWidth);
+        }
+    }
 
-        console.log("create tile list");
-        console.log(gameState);
+    window.addEventListener('resize', handleResize);
+
+    const createTileList = (gameState) => {
 
         let newList = []
         let imgSrc = emptyTile;
@@ -134,12 +147,18 @@ const Game = (props) => {
         }
     }
 
+    // Check the tiles around the player
     const checkAdjacencyTiles = () => {
+
+        if (toNextStage) return;
+        
         const playerPosition = game.gameState.playerPos;
         const topTile = playerPosition - boardWidth;
         const bottomTile = playerPosition + boardWidth;
         const rightTile = playerPosition + 1;
+        const bRightBorder = (rightTile % boardWidth) === 0;
         const leftTile = playerPosition -1;
+        const bLeftBorder = (playerPosition % boardWidth) === 0;
 
 
         if (tileList?.[topTile]) {
@@ -162,7 +181,7 @@ const Game = (props) => {
                 return;
             }
         }
-        if (tileList?.[rightTile]) {
+        if (tileList?.[rightTile] && !bRightBorder) {
             if (tileList[rightTile].props.type !== "empty") {
                 if (tileList[rightTile].props.type === "virus") {
                     playerCaughtVirus();
@@ -172,7 +191,7 @@ const Game = (props) => {
                 return;
             }
         }
-        if (tileList?.[leftTile]) {
+        if (tileList?.[leftTile] && !bLeftBorder) {
             if (tileList[leftTile].props.type !== "empty") {
                 if (tileList[leftTile].props.type === "virus") {
                     playerCaughtVirus();
@@ -198,18 +217,25 @@ const Game = (props) => {
                 
                 const noMaskPosition = game.gameState.noMask[randomNum];
                 const topTile = noMaskPosition - boardWidth;
+                const bTopTile = noMaskPosition < boardWidth;
                 const bottomTile = noMaskPosition + boardWidth;
+                const bBottomTile = noMaskPosition >= boardWidth**2 - boardWidth;
                 const rightTile = noMaskPosition + 1;
+                const bRightBorder = (rightTile % boardWidth) === 0;
                 const leftTile = noMaskPosition -1;
+                const bLeftBorder = (noMaskPosition % boardWidth) === 0;
     
                 let list = [];
+                if(!bTopTile) list.push(topTile);
+                if(!bBottomTile) list.push(bottomTile);
+                if(!bRightBorder) list.push(rightTile);
+                if(!bLeftBorder) list.push(leftTile);
     
-                list.push(topTile, bottomTile, rightTile, leftTile);
                 if (list.includes(game.gameState.playerPos)) {
+                    playerCaughtVirus();
                     list.splice()
                     let index = list.indexOf(game.gameState.playerPos);
                     if (index !== -1) list.splice(index, 1);
-                    playerCaughtVirus();
                 }
                 dispatch(spreadVirus(list));
             }
@@ -219,13 +245,13 @@ const Game = (props) => {
     }
 
     const playerCaughtVirus = () => {
+        SetToNextStage(true);
         dispatch(updateScore(-100));
         dispatch(caughtVirus(game.gameState.playerPos));
+        dispatch(incrementVirusStats());
         clearInterval(virusInterval);
-        SetToNextStage(true);
-        setTimeout(() => {
-            alert("Vous avez attrapé le virus ! Score - 100 points !");
-        }, 500)
+        setAlertMessage("Vous avez attrapé le virus ! -100 points !");
+        setAlert(true);
     }
 
     const activeActionButton = (type, tileId) => {
@@ -250,6 +276,7 @@ const Game = (props) => {
 
     const doAction = (label) => {
         let tempScore=0;
+        let message = "";
         switch(label) {
             case "Donner un masque":
                 dispatch(giveMask(actionId));
@@ -263,14 +290,21 @@ const Game = (props) => {
                 setActionId(-1);
                 SetToNextStage(true);
                 tempScore = 100;
+                message = "Vous avez eu votre dose ! ";
                 if (game.gameState.gel > -1) {
                     tempScore -= 20;
+                    message += "Cependant vous avez oublié de mettre du gel ! ";
+                    dispatch(incrementGelStats());
                 }
                 if (game.gameState.noMask.length > 0) {
                     tempScore -= game.gameState.noMask.length*30;
+                    message += "Attention malus : vous avez oublié de distribuer des masques !";
+                    dispatch(updateNoMaskStats(game.gameState.noMask.length));
                 }
                 dispatch(updateScore(tempScore));
                 clearInterval(virusInterval);
+                setAlertMessage(message);
+                setAlert(true);
                 break;
             case "Prendre du gel":
                 dispatch(getGel());
@@ -295,34 +329,87 @@ const Game = (props) => {
 
     return (
         <div className="mainContainer">
-            <div className="boardContainer">
+            { alert &&
+                <div className="alertMessage">
+                    <p>{alertMessage}</p>
+                    <button
+                        onClick={() => setAlert(false)}
+                    >OK</button>
+                </div>
+            }
+            <div className="statsContainer">
+                <p>Dose(s) : {game.gameState.number}</p>
+                <Score 
+                    score={game.stats.score}
+                />
+                <Timer 
+                    stopTimer={toNextStage ? true : false}
+                />
+            </div>
+            <div id="boardContainer" ref={boardElement} style={{ 'height': boardCSSWidth }} >
                 { tileList.length > 0 &&
                     tileList.map(t => t)
                 }
             </div>
-            {
-                !toNextStage &&
-                <div>
+            <div className="bottomContainer">
+                <div className="moveActionBtnContainer">
                     <div className="moveBtnContainer">
-                        <button onClick={() => move("up")}>▲</button>
-                        <button onClick={() => move("down")}>▼</button>
-                        <button onClick={() => move("left")}>◄</button>
-                        <button onClick={() => move("right")}>►</button>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <button 
+                                            className=".upBtn" 
+                                            onClick={() => move("up")}
+                                            disabled={toNextStage}
+                                        >▲</button>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <button 
+                                            className=".leftBtn" 
+                                            onClick={() => move("left")}
+                                            disabled={toNextStage}
+                                        >◄</button>
+                                    </td>
+                                    <td>
+                                        <button 
+                                            className=".downBtn" 
+                                            onClick={() => move("down")}
+                                            disabled={toNextStage}
+                                        >▼</button>
+                                    </td>
+                                    <td>
+                                        <button 
+                                            className=".rightBtn" 
+                                            onClick={() => move("right")}
+                                            disabled={toNextStage}
+                                        >►</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <button onClick={() => doAction(actionBtnLabel)}>{actionBtnLabel}</button>
                 </div>
-            }
-            {
-                toNextStage &&
-                <button onClick={handleNextBtn}>Suivant</button>
-            }
-            <p>Dose : {game.gameState.number}</p>
-            <Score 
-                score={game.stats.score}
-            />
-            <Timer 
-                stopTimer={toNextStage ? true : false}
-            />
+
+                <div className="nextStateContainer">
+                    <div className="nextStageBtnContainer">
+                        <button 
+                            className="actionBtn" 
+                            onClick={() => doAction(actionBtnLabel)}
+                            disabled={actionBtnLabel === "Aucune action" || toNextStage}
+                        >{actionBtnLabel}</button>
+                        <button 
+                            className="nextStageBtn" 
+                            onClick={handleNextBtn}
+                            disabled={!toNextStage}
+                        >Suivant</button>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

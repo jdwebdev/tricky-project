@@ -21,7 +21,7 @@ describe("Introduction component", () => {
 
   it('display first phrase correctly', () => {
     const p = introWrapper.find('p').text()
-    expect(p).toEqual("Bienvenue dans Tricky Project")    
+    expect(p).toEqual("Bienvenue dans Tricky Project.")    
   })
 
   it('display next phrase on click', () => {

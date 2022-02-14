@@ -1,6 +1,12 @@
-import data from '../data';
+// import data from '../data';
 
-const initialState = {score: data.score, timer: data.timer};
+const initialState = {
+    score: 0, 
+    timer: 0, 
+    gel: 0, 
+    noMask: 0, 
+    virus: 0
+};
 
 const statistiquesReducer = (state = initialState, action) => {
     let newScore;
@@ -18,6 +24,30 @@ const statistiquesReducer = (state = initialState, action) => {
                 ...state,
                 timer: state.timer + 1
             };
+        case 'INCREMENT_GEL_STATS':
+            return {
+                ...state,
+                gel: state.gel + 1
+            }
+        case 'UPDATE_NO_MASK_STATS':
+            return {
+                ...state,
+                noMask: state.noMask + action.payload
+            }
+        case 'INCREMENT_VIRUS_STATS':
+            return {
+                ...state,
+                virus: state.virus + 1
+            }
+        case 'RESET_STATS':
+            return {
+                ...state, 
+                score: 0,
+                timer: 0,
+                gel: 0,
+                noMask: 0,
+                virus: 0
+            }
         default:
             return state;
     }

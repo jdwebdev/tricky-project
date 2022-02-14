@@ -2,8 +2,6 @@
 import React from 'react'
 import Score from '../components/Score'
 import { shallow } from "enzyme"
-// import { shallowToJson } from "enzyme-to-json"
-// import {render} from '@testing-library/react'
 
 
 describe("Score component", () => {
