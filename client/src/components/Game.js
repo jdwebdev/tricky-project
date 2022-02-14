@@ -19,7 +19,7 @@ import sick from '../images/sick.png'
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { nextStage, movePlayer, giveMask, getGel, enterPharmacy, spreadVirus, emptyVirus, caughtVirus } from '../actions/gameState';
-import { updateScore } from '../actions/statistiques';
+import { updateScore, incrementGelStats, updateNoMaskStats, incrementVirusStats } from '../actions/statistiques';
 
 const boardWidth = 9; 
 
@@ -28,7 +28,6 @@ const Game = (props) => {
     const dispatch = useDispatch();
     const game = useSelector(state => state);
 
-    console.log("REFRESH");
     const [virusInterval, setVirusInterval] = useState();
     const [tileList, setTileList] = useState([]);
     const [actionBtnLabel, setActionBtnLabel] = useState("Aucune action");
@@ -56,9 +55,6 @@ const Game = (props) => {
     }, [tileList]);
 
     const createTileList = (gameState) => {
-
-        console.log("create tile list");
-        console.log(gameState);
 
         let newList = []
         let imgSrc = emptyTile;
@@ -139,7 +135,9 @@ const Game = (props) => {
         const topTile = playerPosition - boardWidth;
         const bottomTile = playerPosition + boardWidth;
         const rightTile = playerPosition + 1;
+        const bRightBorder = (rightTile % boardWidth) === 0;
         const leftTile = playerPosition -1;
+        const bLeftBorder = (playerPosition % boardWidth) === 0;
 
 
         if (tileList?.[topTile]) {
@@ -162,7 +160,7 @@ const Game = (props) => {
                 return;
             }
         }
-        if (tileList?.[rightTile]) {
+        if (tileList?.[rightTile] && !bRightBorder) {
             if (tileList[rightTile].props.type !== "empty") {
                 if (tileList[rightTile].props.type === "virus") {
                     playerCaughtVirus();
@@ -172,7 +170,7 @@ const Game = (props) => {
                 return;
             }
         }
-        if (tileList?.[leftTile]) {
+        if (tileList?.[leftTile] && !bLeftBorder) {
             if (tileList[leftTile].props.type !== "empty") {
                 if (tileList[leftTile].props.type === "virus") {
                     playerCaughtVirus();
@@ -198,18 +196,26 @@ const Game = (props) => {
                 
                 const noMaskPosition = game.gameState.noMask[randomNum];
                 const topTile = noMaskPosition - boardWidth;
+                const bTopTile = noMaskPosition < boardWidth;
                 const bottomTile = noMaskPosition + boardWidth;
+                const bBottomTile = noMaskPosition >= boardWidth**2 - boardWidth;
                 const rightTile = noMaskPosition + 1;
+                const bRightBorder = (rightTile % boardWidth) === 0;
                 const leftTile = noMaskPosition -1;
+                const bLeftBorder = (noMaskPosition % boardWidth) === 0;
     
                 let list = [];
+                if(!bTopTile) list.push(topTile);
+                if(!bBottomTile) list.push(bottomTile);
+                if(!bRightBorder) list.push(rightTile);
+                if(!bLeftBorder) list.push(leftTile);
     
-                list.push(topTile, bottomTile, rightTile, leftTile);
+                // list.push(topTile, bottomTile, rightTile, leftTile);
                 if (list.includes(game.gameState.playerPos)) {
+                    playerCaughtVirus();
                     list.splice()
                     let index = list.indexOf(game.gameState.playerPos);
                     if (index !== -1) list.splice(index, 1);
-                    playerCaughtVirus();
                 }
                 dispatch(spreadVirus(list));
             }
@@ -219,13 +225,14 @@ const Game = (props) => {
     }
 
     const playerCaughtVirus = () => {
+        SetToNextStage(true);
         dispatch(updateScore(-100));
         dispatch(caughtVirus(game.gameState.playerPos));
+        dispatch(incrementVirusStats());
         clearInterval(virusInterval);
-        SetToNextStage(true);
         setTimeout(() => {
             alert("Vous avez attrapé le virus ! Score - 100 points !");
-        }, 500)
+        }, 300)
     }
 
     const activeActionButton = (type, tileId) => {
@@ -250,6 +257,7 @@ const Game = (props) => {
 
     const doAction = (label) => {
         let tempScore=0;
+        let message = "";
         switch(label) {
             case "Donner un masque":
                 dispatch(giveMask(actionId));
@@ -265,12 +273,19 @@ const Game = (props) => {
                 tempScore = 100;
                 if (game.gameState.gel > -1) {
                     tempScore -= 20;
+                    message = "Cependant vous avez oublié de mettre du gel ! ";
+                    dispatch(incrementGelStats());
                 }
                 if (game.gameState.noMask.length > 0) {
                     tempScore -= game.gameState.noMask.length*30;
+                    message += "Attention malus : Vous avez oublié de distribuer des masques !";
+                    dispatch(updateNoMaskStats(game.gameState.noMask.length));
                 }
                 dispatch(updateScore(tempScore));
                 clearInterval(virusInterval);
+                setTimeout(() => {
+                    alert("Vous avez eu votre dose ! " + message);
+                }, 300)
                 break;
             case "Prendre du gel":
                 dispatch(getGel());
@@ -304,10 +319,10 @@ const Game = (props) => {
                 !toNextStage &&
                 <div>
                     <div className="moveBtnContainer">
-                        <button onClick={() => move("up")}>▲</button>
-                        <button onClick={() => move("down")}>▼</button>
-                        <button onClick={() => move("left")}>◄</button>
-                        <button onClick={() => move("right")}>►</button>
+                        <button className=".upBtn" onClick={() => move("up")}>▲</button>
+                        <button className=".downBtn" onClick={() => move("down")}>▼</button>
+                        <button className=".leftBtn" onClick={() => move("left")}>◄</button>
+                        <button className=".rightBtn" onClick={() => move("right")}>►</button>
                     </div>
                     <button onClick={() => doAction(actionBtnLabel)}>{actionBtnLabel}</button>
                 </div>
