@@ -21,7 +21,7 @@ const Gameover = (props) => {
     }
 
     return (
-        <div>
+        <div className="gameoverContainer">
             <ul>
                 <li><strong>Score total : {result.score}</strong></li>
                 <li>Temps : {minutes} min. {seconds} sec.</li>
@@ -29,10 +29,12 @@ const Gameover = (props) => {
             <p><strong>Malus :</strong></p>
             <ul>
                 <li>Gels oubliés : {result.gel} x -20 pts</li>
-                <li>Personnes sans masques : {result.noMask} x -50 pts</li>
+                <li>Personnes sans masque : {result.noMask} x -50 pts</li>
                 <li>Virus attrapés : {result.virus} x -100 pts</li>
             </ul>
-            <button onClick={handleClick}>Rejouer</button>
+            <button 
+                onClick={handleClick}
+            >Rejouer</button>
         </div>
     )
 }

@@ -9,8 +9,8 @@ exports[`app component renders correctly 1`] = `
       Tricky Project
     </h1>
   </header>
-  <Game
-    finishGame={[Function]}
+  <Introduction
+    onClick={[Function]}
   />
 </div>
 `;

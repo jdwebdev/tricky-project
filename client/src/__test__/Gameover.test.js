@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 import React from 'react'
 import Gameover from '../components/Gameover'
-// import { shallow } from "enzyme"
 import { shallowToJson } from "enzyme-to-json"
 import { Provider } from 'react-redux'
 import configureStore from 'redux-mock-store'

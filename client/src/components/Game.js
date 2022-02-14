@@ -35,10 +35,19 @@ const Game = (props) => {
     const [toNextStage, SetToNextStage] = useState(false);
 
     const savedSpreadVirusCallback = useRef();
+    const boardElement = useRef();
+    const [boardCSSWidth, setBoardCSSWidth] = useState(630);
+
+    const [alert, setAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
 
     useEffect(() => {
         savedSpreadVirusCallback.current = spreadRandomVirus;
     })
+
+    useEffect(() => {
+        handleResize();
+    }, [])
 
     useEffect(() => {
         setVirusInterval(setInterval(() => {
@@ -53,6 +62,14 @@ const Game = (props) => {
     useEffect(() => {
         checkAdjacencyTiles();
     }, [tileList]);
+
+    const handleResize = () => {
+        if (boardElement.current) {
+            setBoardCSSWidth(boardElement.current.clientWidth);
+        }
+    }
+
+    window.addEventListener('resize', handleResize);
 
     const createTileList = (gameState) => {
 
@@ -130,7 +147,11 @@ const Game = (props) => {
         }
     }
 
+    // Check the tiles around the player
     const checkAdjacencyTiles = () => {
+
+        if (toNextStage) return;
+        
         const playerPosition = game.gameState.playerPos;
         const topTile = playerPosition - boardWidth;
         const bottomTile = playerPosition + boardWidth;
@@ -210,7 +231,6 @@ const Game = (props) => {
                 if(!bRightBorder) list.push(rightTile);
                 if(!bLeftBorder) list.push(leftTile);
     
-                // list.push(topTile, bottomTile, rightTile, leftTile);
                 if (list.includes(game.gameState.playerPos)) {
                     playerCaughtVirus();
                     list.splice()
@@ -230,9 +250,8 @@ const Game = (props) => {
         dispatch(caughtVirus(game.gameState.playerPos));
         dispatch(incrementVirusStats());
         clearInterval(virusInterval);
-        setTimeout(() => {
-            alert("Vous avez attrapé le virus ! Score - 100 points !");
-        }, 300)
+        setAlertMessage("Vous avez attrapé le virus ! -100 points !");
+        setAlert(true);
     }
 
     const activeActionButton = (type, tileId) => {
@@ -271,21 +290,21 @@ const Game = (props) => {
                 setActionId(-1);
                 SetToNextStage(true);
                 tempScore = 100;
+                message = "Vous avez eu votre dose ! ";
                 if (game.gameState.gel > -1) {
                     tempScore -= 20;
-                    message = "Cependant vous avez oublié de mettre du gel ! ";
+                    message += "Cependant vous avez oublié de mettre du gel ! ";
                     dispatch(incrementGelStats());
                 }
                 if (game.gameState.noMask.length > 0) {
                     tempScore -= game.gameState.noMask.length*30;
-                    message += "Attention malus : Vous avez oublié de distribuer des masques !";
+                    message += "Attention malus : vous avez oublié de distribuer des masques !";
                     dispatch(updateNoMaskStats(game.gameState.noMask.length));
                 }
                 dispatch(updateScore(tempScore));
                 clearInterval(virusInterval);
-                setTimeout(() => {
-                    alert("Vous avez eu votre dose ! " + message);
-                }, 300)
+                setAlertMessage(message);
+                setAlert(true);
                 break;
             case "Prendre du gel":
                 dispatch(getGel());
@@ -310,34 +329,87 @@ const Game = (props) => {
 
     return (
         <div className="mainContainer">
-            <div className="boardContainer">
+            { alert &&
+                <div className="alertMessage">
+                    <p>{alertMessage}</p>
+                    <button
+                        onClick={() => setAlert(false)}
+                    >OK</button>
+                </div>
+            }
+            <div className="statsContainer">
+                <p>Dose(s) : {game.gameState.number}</p>
+                <Score 
+                    score={game.stats.score}
+                />
+                <Timer 
+                    stopTimer={toNextStage ? true : false}
+                />
+            </div>
+            <div id="boardContainer" ref={boardElement} style={{ 'height': boardCSSWidth }} >
                 { tileList.length > 0 &&
                     tileList.map(t => t)
                 }
             </div>
-            {
-                !toNextStage &&
-                <div>
+            <div className="bottomContainer">
+                <div className="moveActionBtnContainer">
                     <div className="moveBtnContainer">
-                        <button className=".upBtn" onClick={() => move("up")}>▲</button>
-                        <button className=".downBtn" onClick={() => move("down")}>▼</button>
-                        <button className=".leftBtn" onClick={() => move("left")}>◄</button>
-                        <button className=".rightBtn" onClick={() => move("right")}>►</button>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <button 
+                                            className=".upBtn" 
+                                            onClick={() => move("up")}
+                                            disabled={toNextStage}
+                                        >▲</button>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <button 
+                                            className=".leftBtn" 
+                                            onClick={() => move("left")}
+                                            disabled={toNextStage}
+                                        >◄</button>
+                                    </td>
+                                    <td>
+                                        <button 
+                                            className=".downBtn" 
+                                            onClick={() => move("down")}
+                                            disabled={toNextStage}
+                                        >▼</button>
+                                    </td>
+                                    <td>
+                                        <button 
+                                            className=".rightBtn" 
+                                            onClick={() => move("right")}
+                                            disabled={toNextStage}
+                                        >►</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <button onClick={() => doAction(actionBtnLabel)}>{actionBtnLabel}</button>
                 </div>
-            }
-            {
-                toNextStage &&
-                <button onClick={handleNextBtn}>Suivant</button>
-            }
-            <p>Dose : {game.gameState.number}</p>
-            <Score 
-                score={game.stats.score}
-            />
-            <Timer 
-                stopTimer={toNextStage ? true : false}
-            />
+
+                <div className="nextStateContainer">
+                    <div className="nextStageBtnContainer">
+                        <button 
+                            className="actionBtn" 
+                            onClick={() => doAction(actionBtnLabel)}
+                            disabled={actionBtnLabel === "Aucune action" || toNextStage}
+                        >{actionBtnLabel}</button>
+                        <button 
+                            className="nextStageBtn" 
+                            onClick={handleNextBtn}
+                            disabled={!toNextStage}
+                        >Suivant</button>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

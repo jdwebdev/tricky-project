@@ -3,6 +3,7 @@
     padding: 0;
     box-sizing: border-box;
 }
+
 /* APP */
 .App {
     text-align: center;
@@ -17,14 +18,37 @@ header {
     margin: 0 auto;
     padding: 50px;
     width: 70%;
-    min-height: 300px;
+    min-height: 210px;
     border-radius: 10px;
     font-size: 20px;
     background-color: #8e8e8e;
+    position: relative;
 }
+
 .introductionContainer p {
-    min-height: 60px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
 }
+
+@media screen and (max-width: 768px) {
+    .introductionContainer {
+        min-height: 250px;
+        padding: 50px 20px;
+    }
+    .introductionContainer p {
+        font-size: 16px;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .introductionContainer {
+        width: 50%;
+    }
+}
+
 .nextButton {
     width: 100px;
     height: 50px;
@@ -32,82 +56,236 @@ header {
     border: none;
     border-radius: 5px;
     font-size: 16px;
-    background-color: white;
+    background-color: #4c708e;
     cursor: pointer;
     transition: font-size 0.2s, background-color 0.4s;
 }
-
 .nextButton:hover {
+    color: white;
     font-size: 18px;
-    background-color: rgb(47, 255, 109);
-}
-
-/* .startBtnContainer {
-    margin-top: 100px;
-} */
-
-@media screen and (max-width: 768px) {
-    .introductionContainer {
-        min-height: 400px;
-    }
-    .introductionContainer p {
-        min-height: 120px;
-    }
+    background-color: rgb(41, 184, 122);
 }
 
 .startBtn {
-    background-color: #282c34;
-    width: 200px;
-    height: 200px;
+    background-color: #4c708e;
+    width: 150px;
+    height: 150px;
+    margin-top: 30px;
     border: none;
     border-radius: 10px;
-    box-shadow: 10px 5px 5px #bcbcbc;
+    box-shadow: 5px 5px 5px #bcbcbc;
     color: white;
-    font-size: 30px;
+    font-size: 20px;
     cursor: pointer;
-    transition: font-size 0.2s, color 0.2s, background-color 0.2s, width 0.2s,
-        height 0.2s;
+    transition: font-size 0.2s, color 0.2s, background-color 0.2s, width 0.2s;
 }
 
 .startBtn:hover {
-    background-color: rgb(106, 106, 106);
-    color: black;
-    font-size: 50px;
-    width: 220px;
-    height: 220px;
+    background-color: rgb(41, 184, 122);
+    color: white;
+    font-size: 22px;
+    width: 170px;
 }
 
 /* GAME */
 .mainContainer {
-    padding: 0 50px;
+    margin: 0 auto;
 }
-.boardContainer {
+
+.alertMessage {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.9);
+    position: absolute;
+    top: 0;
+    z-index: 1;
+}
+
+.alertMessage p {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 40px;
+}
+
+.alertMessage button {
+    background-color: #4c708e;
+    width: 150px;
+    height: 150px;
+    border: none;
+    border-radius: 10px;
+    font-size: 30px;
+    cursor: pointer;
+    transition: font-size 0.2s, color 0.2s, background-color 0.2s;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.alertMessage button:hover {
+    background-color: rgb(41, 184, 122);
+    color: white;
+}
+
+@media screen and (max-width: 768px) {
+    .alertMessage p {
+        font-size: 20px;
+    }
+}
+
+.statsContainer {
+    background-color: #4c708e;
+    max-width: 630px;
+    padding: 10px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-around;
+}
+#boardContainer {
     background-color: #282c34;
     max-width: 630px;
     height: 630px;
     max-height: 630px;
     margin: 0 auto;
-    /* display: inline-block; */
+}
+
+.bottomContainer {
+    max-width: 630px;
+    margin: 0 auto;
+    padding: 0 50px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.moveActionBtnContainer {
+    min-width: 180px;
+    height: 100px;
+}
+.moveBtnContainer {
+    padding: 10px;
+}
+
+.moveBtnContainer button {
+    width: 50px;
+    height: 50px;
+    margin-right: 1px;
+    margin-top: 1px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #4c708e;
+    transition: color 0.2s, background-color 0.2s;
+}
+.moveBtnContainer button:hover {
+    background-color: rgb(41, 184, 122);
+    color: white;
+}
+.moveBtnContainer button:disabled {
+    background-color: rgb(43, 43, 43);
+    color: rgb(106, 106, 106);
+    cursor: default;
+}
+
+.actionBtn {
+    height: 50px;
+    width: 170px;
+    padding: 10px;
+    margin: 0 0 5px 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #4c708e;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.actionBtn:hover {
+    background-color: rgb(41, 184, 122);
+    color: white;
+}
+.actionBtn:disabled {
+    background-color: rgb(43, 43, 43);
+    color: rgb(106, 106, 106);
+    cursor: default;
+}
+
+.nextStateContainer {
+    width: 180px;
+    min-width: 180px;
+    padding: 10px;
+}
+
+.nextStageBtn {
+    width: 170px;
+    height: 50px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #4c708e;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.nextStageBtn:hover {
+    background-color: rgb(41, 184, 122);
+    color: white;
+}
+.nextStageBtn:disabled {
+    background-color: rgb(43, 43, 43);
+    color: rgb(106, 106, 106);
+    cursor: default;
 }
 
 /* TILE */
 .tile {
-    /* width: 80px; */
     width: 11.11%;
-    /* height: 10%; */
-    height: 70px;
+    height: 11.11%;
     display: inline-block;
     vertical-align: top;
     position: relative;
 }
 
-.tile p {
-    position: absolute;
-    font-size: 10px;
-    padding-left: 10px;
-}
-
 .tile img {
     width: 100%;
     height: 100%;
+}
+
+/* GAME OVER */
+.gameoverContainer {
+    margin: 0 auto;
+    width: 50%;
+    background-color: #4b618d;
+    padding: 50px 20px;
+    border-radius: 10px;
+}
+
+.gameoverContainer li {
+    list-style: none;
+}
+
+.gameoverContainer button {
+    width: 100px;
+    height: 50px;
+    border: none;
+    border-radius: 5px;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.gameoverContainer button:hover {
+    background-color: rgb(41, 184, 122);
+    color: white;
+}
+
+@media screen and (max-width: 768px) {
+    .gameoverContainer {
+        font-size: 12px;
+        width: 80%;
+    }
 }

@@ -7,7 +7,7 @@ import { useState } from 'react';
 
 const App = () => {
 
-  const [gameState, setGameState] = useState('game');
+  const [gameState, setGameState] = useState('intro');
 
   const changeGameState = (newState) => {
     setGameState(newState);

@@ -19,8 +19,10 @@ const Introduction = (props) => {
     }
 
     return (
-        <div className="introductionContainer">
-            <p>{phraseList[currentPhrase]}</p>
+        <div>
+            <div className="introductionContainer">
+                <p>{phraseList[currentPhrase]}</p>
+            </div>
             {end === false &&             
                 <button 
                     className="nextButton"
@@ -29,7 +31,7 @@ const Introduction = (props) => {
             }
             {end &&
                 <div className="startBtnContainer"> 
-                    <button className="startBtn" onClick={props.onClick}>Start</button>
+                    <button className="startBtn" onClick={props.onClick}>Commencer</button>
                 </div>
             }
         </div>
